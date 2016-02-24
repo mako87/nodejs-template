@@ -1,5 +1,5 @@
 module.exports = function(express,jwt,config,store,logger,bcrypt){
-    var router = express.Router();
+    var router =  express['Router']();
 
     router.post("/", function(req,res){
         if (!req.body.username) {return res.status(400).send("username required");}
