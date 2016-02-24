@@ -3,7 +3,7 @@ var container = dependable.container();
 
 // Load and register app config
 container.register("config",function(path){
-    return require(path.join(__dirname, "./config/default.json"))
+    return require(path.join(__dirname, "./config/default.json"));
 });
 
 container.register("express",function(){

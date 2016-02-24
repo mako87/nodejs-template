@@ -4,5 +4,5 @@ module.exports = function(logger) {
             logger.info(req.ip+" "+err.message);
             res.status(401).send(err.message);
         }
-    }
+    };
 };
