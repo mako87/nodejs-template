@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/nodejs-template"
+    "start": "node ./bin/nodejs-template",
+    "test": "mocha"
   },
   "dependencies": {
     "bcrypt": "^0.8.5",
@@ -19,5 +20,7 @@
     "socket.io": "^1.4.5",
     "winston": "^2.1.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "should": "^8.2.2"
+  }
 }
