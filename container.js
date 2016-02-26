@@ -27,12 +27,12 @@ container.register("path",function(){
 });
 
 container.register("bcrypt",function(){
-   return require("bcrypt") ;
+   return require("bcrypt");
 });
 
 container.load(container.get("path").join(__dirname, "./routes"));
-
 container.load(container.get("path").join(__dirname, "./lib"));
+container.load(container.get("path").join(__dirname, "./models"));
 
 // Register the container with the container, useful for when you need dynamically resolve a dependency or avoid a circular dependency
 container.register("container", function () {

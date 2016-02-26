@@ -13,18 +13,14 @@ var options ={
 
 describe("Socket.io",function(){
     describe("Message ember-data",function(){
-        it("Find",function(done){
-            var client = io.connect(socketURL,options);
-            client.on("connect",function(){
-                client.emit("ember-data",{cmd:"find",type:"user",params:"mgrassi"},done);
-            });
-            client.on("connect_error",done);
-        });
 
-        it("Create",function(done){
+        it("Create if no find the user admin",function(done){
             var client = io.connect(socketURL,options);
             client.on("connect",function(){
-                client.emit("ember-data",{cmd:"create",type:"user",params:{id:"mgrassi2",password:"test"}},done);
+                client.emit("ember-data",{cmd:"find",type:"user",params:"admin"},function(err,user){
+                    if (err) client.emit("ember-data",{cmd:"create",type:"user",params:{id:"admin",password:"admin"}},done);
+                    else done();
+                });
             });
             client.on("connect_error",done);
         });
