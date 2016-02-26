@@ -19,7 +19,7 @@ describe("Authentication",function(){
     it("Incorrect credentials",function(){
         options["body"]={username:"wrong",password:"wrong"};
         request(options, function(error,response){
-            response.statusCode.should.equal(401);
+            should.equal(response.statusCode,401);
         });
     });
 
