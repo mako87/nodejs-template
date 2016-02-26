@@ -9,11 +9,11 @@ module.exports = function(express,jwt,config,store,logger,bcrypt){
             if (bcrypt.compareSync(req.body.password, r["password"])) {
                 return res.status(200).json(jwt.sign({username:req.body.username},"pr1v4t3 k3y",{expiresTokenIn:config["jsonwebtoken"]["expiresTokenIn"]}));
             } else {
-                return res.status(400).send("invalid credentials");
+                return res.status(401).send("invalid credentials");
             }
         }).catch(function(e){
             logger.info(e+" ["+req.body.username+"]");
-            return res.status(400).send("invalid credentials");
+            return res.status(401).send("invalid credentials");
         });
     });
 
