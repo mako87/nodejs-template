@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/nodejs-template",
-    "test": "mocha -R spec"
+    "test": "mocha"
   },
   "dependencies": {
     "bcrypt": "^0.8.5",
