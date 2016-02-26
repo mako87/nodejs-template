@@ -18,8 +18,8 @@ describe("Socket.io",function(){
             var client = io.connect(socketURL,options);
             client.on("connect",function(){
                 client.emit("ember-data",{cmd:"find",type:"user",params:"admin"},function(err){
-                    if (err) client.emit("ember-data",{cmd:"create",type:"user",params:{id:"admin",password:"admin"}},done);
-                    else done();
+                    if (err) {client.emit("ember-data",{cmd:"create",type:"user",params:{id:"admin",password:"admin"}},done);}
+                    else {done();}
                 });
             });
             client.on("connect_error",done);
