@@ -4,14 +4,14 @@ module.exports = function (bcrypt) {
         table: "user",
 
         beforeCreate(User, user, cb) {
-            user.created_at = new Date();
-            user.updated_at = new Date();
+            user.createdAt = new Date();
+            user.updatedAt = new Date();
             user.password = bcrypt.hashSync(user.password,8);
             return cb(null, user);
         },
 
         beforeUpdate(User, user, cb) {
-            user.updated_at = new Date();
+            user.updatedAt = new Date();
             return cb(null, user);
         }
     };
