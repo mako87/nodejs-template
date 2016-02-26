@@ -1,7 +1,6 @@
 /**
  * Created by Marco on 25/02/16.
  */
-var should = require("should");
 var io = require("socket.io-client");
 var config = require("../config/default.json");
 
