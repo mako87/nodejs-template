@@ -7,11 +7,6 @@ var request = require("request");
 
 var url = "http://localhost:"+config["webserver"]["port"];
 
-var options ={
-    transports: ["websocket"],
-    "force new connection": true
-};
-
 describe("Socket.io",function(){
 
     describe("when the user is not logged in", function () {
