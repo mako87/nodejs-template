@@ -17,7 +17,7 @@ describe("Socket.io",function(){
         it("Create if no find the user admin",function(done){
             var client = io.connect(socketURL,options);
             client.on("connect",function(){
-                client.emit("ember-data",{cmd:"find",type:"user",params:"admin"},function(err,user){
+                client.emit("ember-data",{cmd:"find",type:"user",params:"admin"},function(err){
                     if (err) client.emit("ember-data",{cmd:"create",type:"user",params:{id:"admin",password:"admin"}},done);
                     else done();
                 });
