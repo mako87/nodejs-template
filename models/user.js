@@ -1,7 +1,7 @@
 module.exports = function (bcrypt) {
     return {
-        name: 'user',
-        table: 'user',
+        name: "user",
+        table: "user",
 
         beforeCreate: function (User, user, cb) {
             user.created_at = new Date();
