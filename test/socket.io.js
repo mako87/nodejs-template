@@ -34,7 +34,7 @@ describe("Socket.io",function(){
                 body: { username: "admin", password: "admin" },
                 json: true
             }, function (err, resp, body) {
-                this.token = body;
+                this.token = body.token;
                 done();
             }.bind(this));
         });
