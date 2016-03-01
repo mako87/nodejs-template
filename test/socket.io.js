@@ -30,7 +30,7 @@ describe("Socket.io",function(){
 
         before(function (done) {
             request.post({
-                uri: url+"/auth",
+                uri: url+"/token-auth",
                 body: { username: "admin", password: "admin" },
                 json: true
             }, function (err, resp, body) {

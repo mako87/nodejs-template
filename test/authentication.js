@@ -2,7 +2,7 @@ var should = require("should");
 var request = require("request");
 var config = require("../config/default.json");
 
-var url = "http://localhost:"+config["webserver"]["port"]+"/auth";
+var url = "http://localhost:"+config["webserver"]["port"]+"/token-auth";
 
 var options = {
     method: "POST",
@@ -35,7 +35,7 @@ describe("Authentication API",function(){
     });
 
     describe("when missing credentials",function() {
-        it("should response status code 401", function (done) {
+        it("should response status code 400", function (done) {
             options["body"]={};
             request(options, function (error, response) {
                 should.not.exist(error);
