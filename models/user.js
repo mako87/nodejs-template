@@ -5,13 +5,19 @@ module.exports = function (bcrypt) {
 
         beforeCreate(User, user, cb) {
             user.createdAt = new Date();
-            user.updatedAt = new Date();
-            user.password = bcrypt.hashSync(user.password,8);
+            if (user.password) {
+                user.password = bcrypt.hashSync(user.password,8);
+            }
             return cb(null, user);
         },
 
         beforeUpdate(User, user, cb) {
             user.updatedAt = new Date();
+            console.log(user.password);
+            if (user.password) {
+                user.password = bcrypt.hashSync(user.password,8);
+            }
+            console.log(user.password);
             return cb(null, user);
         }
     };
