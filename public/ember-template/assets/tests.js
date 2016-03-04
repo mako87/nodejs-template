@@ -1,3 +1,12 @@
+define('ember-template/tests/adapters/application.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - adapters');
+  QUnit.test('adapters/application.js should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'adapters/application.js should pass jshint.');
+  });
+});
 define('ember-template/tests/app.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -7,13 +16,22 @@ define('ember-template/tests/app.jshint', ['exports'], function (exports) {
     assert.ok(true, 'app.js should pass jshint.');
   });
 });
+define('ember-template/tests/controllers/index.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - controllers');
+  QUnit.test('controllers/index.js should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'controllers/index.js should pass jshint.');
+  });
+});
 define('ember-template/tests/controllers/login.jshint', ['exports'], function (exports) {
   'use strict';
 
   QUnit.module('JSHint - controllers');
   QUnit.test('controllers/login.js should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'controllers/login.js should pass jshint.\ncontrollers/login.js: line 3, col 45, \'set\' is defined but never used.\n\n1 error');
+    assert.ok(true, 'controllers/login.js should pass jshint.');
   });
 });
 define('ember-template/tests/helpers/destroy-app', ['exports', 'ember'], function (exports, _ember) {
@@ -179,7 +197,7 @@ define('ember-template/tests/integration/components/login-form-test', ['exports'
             'name': 'missing-wrapper',
             'problems': ['wrong-type']
           },
-          'revision': 'Ember@2.3.1',
+          'revision': 'Ember@2.4.1',
           'loc': {
             'source': null,
             'start': {
@@ -223,7 +241,7 @@ define('ember-template/tests/integration/components/login-form-test', ['exports'
         return {
           meta: {
             'fragmentReason': false,
-            'revision': 'Ember@2.3.1',
+            'revision': 'Ember@2.4.1',
             'loc': {
               'source': null,
               'start': {
@@ -261,7 +279,7 @@ define('ember-template/tests/integration/components/login-form-test', ['exports'
             'name': 'missing-wrapper',
             'problems': ['wrong-type']
           },
-          'revision': 'Ember@2.3.1',
+          'revision': 'Ember@2.4.1',
           'loc': {
             'source': null,
             'start': {
@@ -301,11 +319,6 @@ define('ember-template/tests/integration/components/login-form-test', ['exports'
 
     assert.equal(this.$().text().trim(), 'template block text');
   });
-
-  (0, _emberQunit.test)("should authentication with credentials", function (assert) {
-
-    this.on("authenticate", function () {});
-  });
 });
 define('ember-template/tests/integration/components/login-form-test.jshint', ['exports'], function (exports) {
   'use strict';
@@ -313,7 +326,7 @@ define('ember-template/tests/integration/components/login-form-test.jshint', ['e
   QUnit.module('JSHint - integration/components');
   QUnit.test('integration/components/login-form-test.js should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'integration/components/login-form-test.js should pass jshint.\nintegration/components/login-form-test.js: line 31, col 5, Missing semicolon.\nintegration/components/login-form-test.js: line 27, col 57, \'assert\' is defined but never used.\n\n2 errors');
+    assert.ok(true, 'integration/components/login-form-test.js should pass jshint.');
   });
 });
 define('ember-template/tests/models/user.jshint', ['exports'], function (exports) {
@@ -361,6 +374,15 @@ define('ember-template/tests/routes/login.jshint', ['exports'], function (export
     assert.ok(true, 'routes/login.js should pass jshint.');
   });
 });
+define('ember-template/tests/serializers/user.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - serializers');
+  QUnit.test('serializers/user.js should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'serializers/user.js should pass jshint.');
+  });
+});
 define('ember-template/tests/services/websocket.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -381,6 +403,50 @@ define('ember-template/tests/test-helper.jshint', ['exports'], function (exports
   QUnit.test('test-helper.js should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'test-helper.js should pass jshint.');
+  });
+});
+define('ember-template/tests/unit/adapters/application-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('adapter:application', 'Unit | Adapter | application', {
+    // Specify the other units that are required for this test.
+    // needs: ['serializer:foo']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var adapter = this.subject();
+    assert.ok(adapter);
+  });
+});
+define('ember-template/tests/unit/adapters/application-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - unit/adapters');
+  QUnit.test('unit/adapters/application-test.js should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/adapters/application-test.js should pass jshint.');
+  });
+});
+define('ember-template/tests/unit/controllers/index-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleFor)('controller:index', 'Unit | Controller | index', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it exists', function (assert) {
+    var controller = this.subject();
+    assert.ok(controller);
+  });
+});
+define('ember-template/tests/unit/controllers/index-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - unit/controllers');
+  QUnit.test('unit/controllers/index-test.js should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/controllers/index-test.js should pass jshint.');
   });
 });
 define('ember-template/tests/unit/controllers/login-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
@@ -497,6 +563,31 @@ define('ember-template/tests/unit/routes/login-test.jshint', ['exports'], functi
   QUnit.test('unit/routes/login-test.js should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/routes/login-test.js should pass jshint.');
+  });
+});
+define('ember-template/tests/unit/serializers/user-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
+
+  (0, _emberQunit.moduleForModel)('user', 'Unit | Serializer | user', {
+    // Specify the other units that are required for this test.
+    needs: ['serializer:user']
+  });
+
+  // Replace this with your real tests.
+  (0, _emberQunit.test)('it serializes records', function (assert) {
+    var record = this.subject();
+
+    var serializedRecord = record.serialize();
+
+    assert.ok(serializedRecord);
+  });
+});
+define('ember-template/tests/unit/serializers/user-test.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  QUnit.module('JSHint - unit/serializers');
+  QUnit.test('unit/serializers/user-test.js should pass jshint', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/serializers/user-test.js should pass jshint.');
   });
 });
 define('ember-template/tests/unit/services/session-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {

@@ -1,10 +1,10 @@
 module.exports = function (bcrypt) {
+
     return {
         name: "user",
         table: "user",
 
         beforeCreate(User, user, cb) {
-            user.createdAt = new Date();
             if (user.password) {
                 user.password = bcrypt.hashSync(user.password,8);
             }
@@ -12,11 +12,18 @@ module.exports = function (bcrypt) {
         },
 
         beforeUpdate(User, user, cb) {
-            user.updatedAt = new Date();
             if (user.password) {
                 user.password = bcrypt.hashSync(user.password,8);
             }
             return cb(null, user);
+        },
+
+        afterFind(User, user, cb){
+            return cb(null,{user: user});
+        },
+
+        afterFindAll(User, users, cb){
+            return cb(null,{users:users});
         }
     };
 };

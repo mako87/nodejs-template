@@ -3,6 +3,86 @@
 
 /* jshint ignore:end */
 
+define("ember-template/adapters/application", ["exports", "ember", "ember-data"], function (exports, _ember, _emberData) {
+    var service = _ember["default"].inject.service;
+    var get = _ember["default"].get;
+    var run = _ember["default"].run;
+    exports["default"] = _emberData["default"].Adapter.extend({
+
+        websocket: service("websocket"),
+
+        init: function init() {
+            this._super.apply(this, arguments);
+        },
+
+        makeSocketRequest: function makeSocketRequest(store, request) {
+            var _this = this;
+
+            return new _ember["default"].RSVP.Promise(function (resolve, reject) {
+                get(_this, "websocket").socket.emit('ember-request', request, function (err, data) {
+                    if (err) {
+                        run(null, reject, err);
+                    } else {
+                        run(null, resolve, data);
+                    }
+                });
+            });
+        },
+
+        createRecord: function createRecord(store, type, snapshot) {
+            var data = this.serialize(snapshot, { includeId: true });
+            return this.makeSocketRequest(store, {
+                cmd: 'create',
+                params: [type.modelName, data]
+            });
+        },
+
+        findRecord: function findRecord(store, type, id) {
+            return this.makeSocketRequest(store, {
+                cmd: 'find',
+                params: [type.modelName, id]
+            });
+        },
+
+        findMany: function findMany(store, type, ids) {
+            return this.makeSocketRequest(store, {
+                cmd: 'findAll',
+                params: [type.modelName, { where: { id: { 'in': ids } } }]
+            });
+        },
+
+        findAll: function findAll(store, type) {
+            return this.makeSocketRequest(store, {
+                cmd: 'findAll',
+                params: [type.modelName]
+            });
+        },
+
+        query: function query(store, type, _query) {
+            return this.makeSocketRequest(store, {
+                cmd: 'findAll',
+                params: [type.modelName, _query]
+            });
+        },
+
+        updateRecord: function updateRecord(store, type, snapshot) {
+            var data = this.serialize(snapshot);
+            return this.makeSocketRequest(store, {
+                cmd: 'update',
+                params: [type.modelName, snapshot.id, data]
+            });
+        },
+
+        deleteRecord: function deleteRecord(store, type, snapshot) {
+            var id = snapshot.id;
+            return this.makeSocketRequest(store, {
+                cmd: 'destroy',
+                params: [type.modelName, id]
+            });
+        }
+
+    });
+});
 define('ember-template/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'ember-template/config/environment'], function (exports, _ember, _emberResolver, _emberLoadInitializers, _emberTemplateConfigEnvironment) {
 
   var App = undefined;
@@ -32,11 +112,17 @@ define('ember-template/components/app-version', ['exports', 'ember-cli-app-versi
 define('ember-template/controllers/array', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Controller;
 });
+define("ember-template/controllers/index", ["exports", "ember"], function (exports, _ember) {
+    var service = _ember["default"].inject.service;
+    var Controller = _ember["default"].Controller;
+    exports["default"] = Controller.extend({
+        session: service("session")
+    });
+});
 define("ember-template/controllers/login", ["exports", "ember"], function (exports, _ember) {
     var service = _ember["default"].inject.service;
     var Controller = _ember["default"].Controller;
     var get = _ember["default"].get;
-    var set = _ember["default"].set;
     exports["default"] = Controller.extend({
 
         session: service("session"),
@@ -149,7 +235,7 @@ define('ember-template/instance-initializers/ember-simple-auth', ['exports', 'em
 define('ember-template/models/user', ['exports', 'ember-data'], function (exports, _emberData) {
     exports['default'] = _emberData['default'].Model.extend({
         username: _emberData['default'].attr('string'),
-        password: _emberData['default'].attr('password')
+        password: _emberData['default'].attr('string')
     });
 });
 define('ember-template/router', ['exports', 'ember', 'ember-template/config/environment'], function (exports, _ember, _emberTemplateConfigEnvironment) {
@@ -187,6 +273,9 @@ define('ember-template/routes/login', ['exports', 'ember', 'ember-simple-auth/mi
   var Route = _ember['default'].Route;
   exports['default'] = Route.extend(_emberSimpleAuthMixinsUnauthenticatedRouteMixin['default'], {});
 });
+define('ember-template/serializers/user', ['exports', 'ember-data'], function (exports, _emberData) {
+  exports['default'] = _emberData['default'].RESTSerializer.extend({});
+});
 define('ember-template/services/session', ['exports', 'ember-simple-auth/services/session'], function (exports, _emberSimpleAuthServicesSession) {
   exports['default'] = _emberSimpleAuthServicesSession['default'];
 });
@@ -196,9 +285,11 @@ define("ember-template/services/websocket", ["exports", "ember"], function (expo
     var set = _ember["default"].set;
     var Service = _ember["default"].Service;
     var observer = _ember["default"].observer;
+    var Logger = _ember["default"].Logger;
     exports["default"] = Service.extend({
 
         session: service("session"),
+        store: service("store"),
 
         init: function init() {
             this._super.apply(this, arguments);
@@ -207,30 +298,55 @@ define("ember-template/services/websocket", ["exports", "ember"], function (expo
         },
 
         setup: function setup(token) {
+            var _this = this;
+
             var socket = window.io.connect('ws://localhost:4000', {
                 "forceNew": true,
                 "query": "token=" + token
             });
-            socket.on("connect", this.connectHandler);
-            socket.on('error', this.errorHandler);
+            socket.on("connect", function () {
+                return _this.connectHandler();
+            });
+            socket.on('error', function () {
+                return _this.errorHandler();
+            });
+            socket.on('disconnect', function () {
+                return _this.disconnectHandler();
+            });
             set(this, 'socket', socket);
         },
 
         connectHandler: function connectHandler() {
-            console.log("Socket connected");
+            set(this, "connected", true);
+        },
+
+        disconnectHandler: function disconnectHandler() {
+            get(this, 'session').invalidate();
         },
 
         errorHandler: function errorHandler(e) {
-            console.log(e);
+            Logger.error(e);
         },
 
         observesAuth: observer('session.session.content.authenticated.token', function () {
-            var _this = this;
+            var _this2 = this;
 
             var token = get(this, 'session.session.content.authenticated.token');
             if (token) {
                 _ember["default"].run(function () {
-                    _this.setup(token);
+                    _this2.setup(token);
+                });
+            }
+        }),
+
+        observesSocket: observer('connected', function () {
+            var _this3 = this;
+
+            var user = get(this, 'session.session.content.authenticated.user');
+            if (user && get(this, "connected")) {
+                _ember["default"].run(function () {
+                    var userNormalized = get(_this3, "store").normalize("user", user);
+                    set(_this3, "session.user", get(_this3, "store").push(userNormalized));
                 });
             }
         })
@@ -247,7 +363,7 @@ define("ember-template/templates/application", ["exports"], function (exports) {
           "name": "missing-wrapper",
           "problems": ["wrong-type"]
         },
-        "revision": "Ember@2.3.1",
+        "revision": "Ember@2.4.1",
         "loc": {
           "source": null,
           "start": {
@@ -293,7 +409,7 @@ define("ember-template/templates/components/login-form", ["exports"], function (
           "name": "missing-wrapper",
           "problems": ["multiple-nodes"]
         },
-        "revision": "Ember@2.3.1",
+        "revision": "Ember@2.4.1",
         "loc": {
           "source": null,
           "start": {
@@ -444,10 +560,10 @@ define("ember-template/templates/index", ["exports"], function (exports) {
     return {
       meta: {
         "fragmentReason": {
-          "name": "modifiers",
-          "modifiers": ["action"]
+          "name": "missing-wrapper",
+          "problems": ["multiple-nodes"]
         },
-        "revision": "Ember@2.3.1",
+        "revision": "Ember@2.4.1",
         "loc": {
           "source": null,
           "start": {
@@ -455,7 +571,7 @@ define("ember-template/templates/index", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 2,
+            "line": 3,
             "column": 0
           }
         },
@@ -473,15 +589,22 @@ define("ember-template/templates/index", ["exports"], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
+        var el1 = dom.createElement("h1");
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var element0 = dom.childAt(fragment, [0]);
-        var morphs = new Array(1);
+        var morphs = new Array(2);
         morphs[0] = dom.createElementMorph(element0);
+        morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2]), 0, 0);
         return morphs;
       },
-      statements: [["element", "action", ["invalidate"], [], ["loc", [null, [1, 8], [1, 31]]]]],
+      statements: [["element", "action", ["invalidate"], [], ["loc", [null, [1, 8], [1, 31]]]], ["content", "session.user.id", ["loc", [null, [2, 4], [2, 23]]]]],
       locals: [],
       templates: []
     };
@@ -495,7 +618,7 @@ define("ember-template/templates/login", ["exports"], function (exports) {
           "name": "missing-wrapper",
           "problems": ["wrong-type"]
         },
-        "revision": "Ember@2.3.1",
+        "revision": "Ember@2.4.1",
         "loc": {
           "source": null,
           "start": {
@@ -559,7 +682,7 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("ember-template/app")["default"].create({"name":"ember-template","version":"0.0.0+16e8b357"});
+  require("ember-template/app")["default"].create({"name":"ember-template","version":"0.0.0+cf40a085"});
 }
 
 /* jshint ignore:end */
