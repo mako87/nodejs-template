@@ -1,9 +1,9 @@
 {
-  "name": "nodejs-template",
+  "name": "risflow-server",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/nodejs-template",
+    "start": "node ./bin/risflow-server",
     "test": "mocha -R spec"
   },
   "dependencies": {
